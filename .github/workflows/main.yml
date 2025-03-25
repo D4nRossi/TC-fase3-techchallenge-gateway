@@ -1,0 +1,31 @@
+name: Run Unit Tests Only
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  test-only:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaurar pacotes do projeto de teste
+        run: dotnet restore TechChallenge.Gateway.Tests/TechChallenge.Gateway.Tests.csproj
+
+      - name: Build dos testes
+        run: dotnet build TechChallenge.Gateway.Tests/TechChallenge.Gateway.Tests.csproj --configuration Release
+
+      - name: Executar testes
+        run: dotnet test TechChallenge.Gateway.Tests/TechChallenge.Gateway.Tests.csproj --no-build --verbosity normal
